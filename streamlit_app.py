@@ -6,6 +6,9 @@ from transformers import pipeline
 import streamlit as st
 from utils import apply_model
 
+import os
+os.environ["HF_HOME"] = "/home/user/huggingface"
+
 device = 0 if torch.cuda.is_available() else -1
 ner_pipeline = pipeline("token-classification", model="CyberPeace-Institute/SecureBERT-NER", device=device)
 
