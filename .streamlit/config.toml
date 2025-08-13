@@ -1,0 +1,7 @@
+[server]
+
+enableXsrfProtection = false
+
+# optional if you test large files:
+
+# maxUploadSize = 400

@@ -15,6 +15,8 @@ ner_pipeline = pipeline("token-classification", model="CyberPeace-Institute/Secu
 st.set_page_config(page_title="NER on Text Files", page_icon="🧠", layout="centered")
 
 st.title("🧠 Named Entity Recognition (NER)")
+st.write("XSRF:", st.get_option("server.enableXsrfProtection"))
+
 st.write("Upload a single **.txt** file and extract entities by class.")
 
 # --- Sidebar: model selection / help ---

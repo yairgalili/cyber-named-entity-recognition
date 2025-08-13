@@ -19,7 +19,7 @@ ner_pipeline = pipeline("token-classification", model="CyberPeace-Institute/Secu
 async def ner(request: NERRequest):
     try:
         answer = apply_model([[request.text]], ner_pipeline)[0][0]
-        return {"entities": answer}
+        return [{"entity": x["entity"], "word": x["word"]} for x in answer]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

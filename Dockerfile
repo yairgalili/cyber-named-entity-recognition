@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY *.py .
 
 ENV PYTHONUNBUFFERED=1 \
-    PORT=8000 \
+    PORT=8501 \
     HF_HOME=/home/user/huggingface
 
 RUN useradd -m -u 1000 user
@@ -26,4 +26,4 @@ COPY --chown=user . $HOME/app
 
 EXPOSE 8501
 
-ENTRYPOINT ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.enableXsrfProtection=false"]

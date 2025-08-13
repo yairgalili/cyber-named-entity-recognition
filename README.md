@@ -11,7 +11,60 @@ pinned: false
 short_description: Streamlit template space
 ---
 
-# cyber-named-entity-recognition
+# NER Benchmarking & On-Prem Deployment
+
+This repository contains the complete solution for benchmarking, selecting, and deploying a Named Entity Recognition (NER) model for the DNRTI dataset, along with an optional web interface for end users.
+
+The project was completed as part of a mission to evaluate SecureBert-NER vs CyNER, choose the best performer, and make it easy to use entirely offline.
+
+The work was carried out in three main stages:
+
+1) Benchmarking Analysis
+
+    Goal: Compare SecureBert-NER and CyNER on the DNRTI dataset.
+
+    Dataset: DNRTI, containing documents with annotated named entities.
+
+    Evaluation Metrics:
+
+    1) Precision
+
+    2) Recall
+
+    3) Latency
+
+    Special Handling: Class mapping applied to align DNRTI labels with model outputs
+
+2) On-Prem NER Service
+
+    Goal: Package the chosen NER model into an offline-capable API service.
+
+    Features:
+
+     - HTTP-based API that accepts raw text and returns detected entities + their classes.
+
+    - Fully Dockerized for easy on-prem installation.
+
+    - No internet connection required after setup.
+
+    Deliverables:
+
+     - Dockerfile and deployment instructions.
+
+     - Local test scripts to validate API functionality.
+
+3) Web UI with Streamlit
+
+    The web provides a simple, user-friendly interface for non-technical users.
+
+    Features:
+
+     - Upload a text file (one at a time).
+
+     - Process file content using the deployed NER model.
+
+     - Display results in a clean table:
+
 
 # DNRTI dataset
 28 classes
@@ -73,3 +126,10 @@ dnrti_to_syner = {
 # service
 1) docker build  -f Dockerfile_api . -t ner-app
 2) docker run -p 8000:8000 ner-app
+3) python tests/test.py
+
+# streamlit
+1) docker build . -t streamlit-app
+2) docker run -p 8501:8501 streamlit-app
+
+See https://huggingface.co/spaces/yairgalili/cyber-ner
