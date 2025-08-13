@@ -1,2 +1,10 @@
+transformers==4.47.0
 seqeval
 rarfile
+fastapi
+pydantic
+torch
+tqdm
+numpy
+uvicorn
+streamlit

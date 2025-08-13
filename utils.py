@@ -1,5 +1,8 @@
 import numpy as np
 import pickle
+import time
+from tqdm import tqdm
+
 
 def predictions_to_iob(sentences_tokens, predictions):
     pred_sequences = []
@@ -67,6 +70,22 @@ dnrti_to_securebert = {
     "Features": "O"
 }
 
+dnrti_to_cyner = {
+    "HackOrg": "Organization",
+    "SecTeam": "Organization",
+    "Idus": "Indicator",
+    "Org": "Indicator",
+    "OffAct": "System", 
+    "Way": "System", 
+    "Exp": "Vulnerability", 
+    "Tool": "Malware",
+    "SamFile": "System",
+    "Time": "Date",
+    "Area": "O",
+    "Purp": "O",
+    "Features": "O"
+}
+
 def remove_prefix(label):
     return label.split('-')[1] if '-' in label else label
 
@@ -85,12 +104,39 @@ def map_predicted_to_true(predicted_labels, true_labels, mapping):
         mapped_predicted_labels.append(mapped_pred_sent)
     return mapped_predicted_labels
 
+
+# Use a pipeline as a high-level helper
+def apply_model(sentences_tokens, ner_pipeline):
+
+    print(f"Running inference on {len(sentences_tokens)} sentences...")
+    start_time = time.time()
+
+    all_predictions = []
+
+    for tokens in tqdm(sentences_tokens):
+        sentence = " ".join(tokens)
+        try:
+            result = ner_pipeline(sentence)
+
+            all_predictions.append(result)
+        except Exception as e:
+            print(f"Error processing sentence: {e}")
+            all_predictions.append([])
+
+    inference_time = time.time() - start_time
+    latency_per_sentence = inference_time / len(sentences_tokens)
+    print(f"Total inference time: {inference_time:.2f}s")
+    print(f"Latency per sentence: {latency_per_sentence:.3f}s")
+
+    return all_predictions, latency_per_sentence
+
+
 # if __name__ == "__main__":
 #     data = {"sentences_tokens": sentences_tokens, "predictions": predictions}
 #     with open('predictions.pkl', 'wb') as f:
 #         pickle.dump(data, f)
 if __name__ == "__main__":
-    with open('predictions.pkl', 'rb') as f:
+    with open('predictions_cyner.pkl', 'rb') as f:
         data = pickle.load(f)
         sentences_tokens = data['sentences_tokens']
         predictions = data['predictions']
@@ -101,5 +147,7 @@ if __name__ == "__main__":
         sentences_tokens = loaded_data['sentences_tokens']
         true_labels = loaded_data['true_labels']
 
-    result = map_predicted_to_true(predicted_iob_tags, true_labels, dnrti_to_securebert)
+    result = map_predicted_to_true(predicted_iob_tags, true_labels, dnrti_to_syner)
     print(result)
+    all_dnrti_labels = sorted(set(label for x in true_labels for label in x))
+    all_dnrti_labels = sorted(set(label["entity"] for x in predictions for label in x))
